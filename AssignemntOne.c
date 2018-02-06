@@ -2,6 +2,8 @@
 #include <linux/kernel.h>
 #include <linux/module.h>
 #include<linux/slab.h>
+#define SIZE 5
+int hashfunction(char s[]);
 
 struct birthday{
 	char name[100];
@@ -11,18 +13,43 @@ struct birthday{
 	struct list_head list;
 };
 
-//key-value pair that hash table use
-struct pair{
+
+struct bucket{
 	//birthday is a doubly-linked list, therefore, the buckets i.e. value of our hash-table(buckets) is doubly linked list
 	struct birthday* value;
-	//using name as key of the hash table
-	char key[100];
-	//necessary to prevent collision
-	struct list_head pair_list;
+	//using id, we can locate our bucket
+	int id;
+	struct list_head bucket_list;
 };
 
 /* This function is called when the module is loaded. */
 int create_list_init(void){
+	int i;
+	//create the hash table buckets
+	struct bucket bucket_head;
+	LIST_HEAD(bucket_head); // declare a list head
+	
+	for(int i=0; i<size; i++){
+    		struct bucket curr_bucket = {
+        		.id = i+1,
+        		.value = NULL,
+    		};
+    		list_add(&curr_bucket.bucket_list, &bucket_head); // add a new entry in the list
+	}
+
+	
+	
+
+
+
+	
+
+
+
+
+
+
+
 
 	int size, temp1, j, i;
 	//declare the size of the hash table, in our case 5
@@ -131,6 +158,46 @@ int create_list_init(void){
 	
 
 }
+//hashfunction used: sums up the ascii value of all the character and mods it by the size of hash_table
+int hashfunction(char s[]){
+     int i, m, ascii;
+     m = 5;
+     while(s[i]!='\0'){
+	ascii += (int)s[i];
+	i++;
+	}
+     return ascii%5;
+ }
+
+void insert_to_hashtable(struct list_head *head_table, struct birthday *entries){
+	int hash_value;
+	struct list_head *ptr;
+	//
+	hash_value = hashfunction(entries->name);
+	//traversing our hashtable to find the apppropriate location to add the entry
+	list_for_each(ptr, &head_table){
+		//check to see wheather this is the right bucket
+		struct bucket* curr_bucket = list_entry(ptr, struct bucket, bucket_list)
+		if(curr_bucket->id == hash_value){
+			// call a function to add entry on bucket
+			list_add(*curr_bucket.value), head pointer..		
+		}
+	}
+
+}
+
+list_empty(head) - tests whether a list is empty
+list_add(new_entry, head) - adds a new entry. Insert a new entry after the specified head.
+list_del(entry) - deletes entry from list.
+list_for_each(pos, head) - iterate over a list
+
+
+
+
+
+	
+}
+
 /* This function is called when the module is removed. */
 void simple_exit(void)
 {
